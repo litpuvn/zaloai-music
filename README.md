@@ -1,20 +1,15 @@
 Vietnamese:
 
 Đính kèm gồm có:
-Docker: 
+Docker:
+ 
 https://drive.google.com/file/d/1zgZyRWfn-VvbSSEFiZU4xZfnb_xt_JR9/view?usp=sharing
+
 md5: 5d4c427516736696e529517c9afdc277
+
+
 Chứa toàn bộ source & model:
--rw-rw-r-- 1 cuong cuong     792 Sep  2 00:05 move.py
--rw-rw-r-- 1 cuong cuong     641 Sep  2 14:02 predict.sh
--rw-rw-r-- 1 cuong cuong    4196 Sep  2 00:03 preprocessing.py
-drwxrwxr-x 3 cuong cuong    4096 Sep  2 13:42 src
--rw-rw-r-- 1 cuong cuong  113714 Aug 25 21:17 train.csv
--rw-rw-r-- 1 cuong cuong    1893 Sep  2 14:06 train.sh
--rw-rw-r-- 1 cuong cuong   19868 Aug 25 21:16 val.csv
--rw-rw-r-- 1 cuong cuong    1768 Sep  2 13:50 xgb_predict.py
--rw-rw-r-- 1 cuong cuong 6206217 Sep  2 12:08 xgb_search.sav
--rw-rw-r-- 1 cuong cuong    7071 Sep  3 13:38 xgb_train.py
+
 Gồm có:
 + Tiền xử lý dữ liệu gồm có move.py, preprocessing.py
 + train.sh để preprocessing và train lại toàn bộ model.
@@ -25,22 +20,30 @@ Gồm có:
 Các bước train lại model:
 1.	Copy dữ liệu gồm train.csv & train/*mp3 vào docker
 2.	Chạy sh train.sh: Hoặc chạy từng bước trong file train.sh
+
 Khi train thì cần chú ý: 
 + Train nhiều model deep 
-+ Train ensamble model: xgb_train.py để có model cuối cùng là xgb_search.sav
++ Train ensamble model: xgb_train.py để có model cuối cùng là xgb_model.sav
+
 Các bước test:
 Làm theo hướng dẫn bên Zalo chỉ việc chạy dòng lệnh:
+
 sudo docker run -v  <nơi dữ liệu>:/data -v <nơi nhận kết quả>:/result vimentor_zaloai_music /bin/bash /model/predict.sh
 Ví dụ: sudo docker run -v /home/cuong/Zalo/submit:/data -v /home/cuong/Zalo:/result vimentor_zaloai_music:ver1 /bin/bash /model/predict.sh
 
 Thuật toán:
+
 Bước 1. Di chuyển train/*mp3 thành 2 tập train/*mp3 và val/*mp3 thành 2 folders riêng biệt. Mục đích việc này để tiến hành cross-validation cho tiện ở ensanble method.
+
 Bước 2: Xử lý dữ liệu đầu vào từ file mp3 để biến thành các file *npy chứa nội dung melspectrogram. Mỗi file mp3 được cắt ngẫu nhiên thành n file npy tùy thuộc vào up or down sampling. Tham khảo code để biết thêm chi tiết các cắt
+
 Bước 3. Train dữ liệu này sử dụng transfer learning với mạng resnet18 và 34 tùy thuộc vào các hyper-parameters. Do ko có nhiều thời gian nên tôi chỉ train 4 model.
-Bước 4. Ta đã có 4 deep models.
-Dùng 4 model đó tiến hành inferencing tập validation và tập train thành các file có tên là “features_raw_fea_S_%s_1.csv” đó là các features cho ensamble model. 
+
+Bước 4. Ta đã có 5 deep models.
+Dùng 5 model đó tiến hành inferencing tập validation và tập train thành các file có tên là “features_raw_fea_S_%s_1.csv” đó là các features cho ensamble model. 
 Một file mp3 được cắt thành 8 files: 5 files đầu liên tiếp nhau và 3 files tiếp theo có điểm bắt đầu cắt là ngẫu nhiên.  Kết quả inferencing cho mỗi file là softmax của deep model. 
-	Số lượng features sẽ là 10 * 8 * 4 (classes * cutting number * number of model)
+	Số lượng features sẽ là 10 * 8 * 5 (classes * cutting number * number of model)
+
 Bước 5. Sau quá trình train & test thì tôi chọn Xgboost
 + để tuning hyper-parameters của Xgboost model sử dụng BayesianOptimization
 Chỉ chạy trên tập validation. (có thể đạt max acc trên tập validation là 80+%)
