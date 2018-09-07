@@ -36,6 +36,7 @@ Download dữ liệu
 + unzip -a train.zip
 + unzip -a test.zip
 + unzip -a private.zip
+
 Load docker
 + sudo nvidia-docker load -i vimentor_zaloai_music
 + sudo nvidia-docker iamges
