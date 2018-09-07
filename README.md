@@ -1,3 +1,8 @@
+Môi trường:
+ffmpeg, python 2.7
+
+packages của python: pandas, sklearn, torch, torchvision, librosa, PIL, xgboost, GPy, GPyOpt
+
 Docker:
 
 version_1: đã submit
