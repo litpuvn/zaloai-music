@@ -40,6 +40,7 @@ Download dữ liệu
 Load docker
 + sudo nvidia-docker load -i vimentor_zaloai_music
 + sudo nvidia-docker iamges
+
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 <none>              <none>              7a36a4586588        3 days ago          4.84GB
 nvidia/cuda         latest              04a9ce0dec6d        4 weeks ago         1.96GB
